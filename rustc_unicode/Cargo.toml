@@ -1,0 +1,14 @@
+[package]
+name = "rust-librustc_unicode"
+version = "0.0.3"
+authors = ["The Rust Developers Team"]
+build = "../build.rs"
+description = "Libcrustc_unicode wrapped into cargo package, suitable for cross-builds."
+workspace = ".."
+
+[lib]
+name = "rustc_unicode"
+path = "../rust/src/librustc_unicode/lib.rs"
+
+[dependencies]
+rust-libcore = { path = "../core" }

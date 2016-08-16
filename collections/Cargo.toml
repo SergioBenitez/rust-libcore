@@ -1,0 +1,16 @@
+[package]
+name = "rust-libcollections"
+version = "0.0.3"
+authors = ["The Rust Developers Team"]
+build = "../build.rs"
+description = "Libcollections wrapped into cargo package, suitable for cross-builds."
+workspace = ".."
+
+[lib]
+name = "collections"
+path = "../rust/src/libcollections/lib.rs"
+
+[dependencies]
+rust-liballoc = { path = "../alloc" }
+rust-librustc_unicode = { path = "../rustc_unicode" }
+rust-libcore = { path = "../core" }

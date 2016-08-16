@@ -1,0 +1,11 @@
+[package]
+name = "rust-libcore"
+version = "0.0.3"
+authors = ["The Rust Developers Team"]
+build = "../build.rs"
+description = "Libcore wrapped into cargo package, suitable for cross-builds"
+workspace = ".."
+
+[lib]
+name = "core"
+path = "../rust/src/libcore/lib.rs"

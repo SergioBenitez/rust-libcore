@@ -4,7 +4,7 @@ use std::fs;
 use std::io;
 use std::path::Path;
 
-const RUST_DIR: &'static str = "./rust";
+const RUST_DIR: &'static str = "../rust";
 
 fn ensure_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
     let path = path.as_ref();
@@ -16,26 +16,30 @@ fn ensure_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
 
 fn main() {
     // Run rustc to get the version
-    let rustc_output = Command::new("rustc").arg("--version")
-        .output().unwrap_or_else(|e| {
+    let rustc_output = Command::new("rustc")
+        .arg("--version")
+        .output()
+        .unwrap_or_else(|e| {
             panic!("failed to execute rustc: {}", e);
         });
+
     let output_bytes: &[u8] = rustc_output.stdout.as_ref();
     let version = match std::str::from_utf8(output_bytes) {
-        Ok(s) => s.split(" ").nth(2).expect("rustc gave invalid version format"),
-        Err(e) => panic!(e),
-    }.trim_left_matches("(");
+            Ok(s) => s.split(" ").nth(2).expect("rustc gave invalid version format"),
+            Err(e) => panic!(e),
+        }
+        .trim_left_matches("(");
 
     match fs::metadata(Path::new(RUST_DIR).join(version)) {
         Ok(meta) => {
             if !meta.is_file() {
                 match fs::remove_dir_all(RUST_DIR) {
                     Err(e) => panic!(e),
-                    _ => {},
+                    _ => {}
                 }
             }
-        },
-        Err(..) => {}, // Ok to ignore since this just means that the version file doesn't exist
+        }
+        Err(..) => {} // Ok to ignore since this just means that the version file doesn't exist
     }
 
     // Ensure the rust directory exists
@@ -55,7 +59,8 @@ fn main() {
         .arg("../build.sh")
         .env("DOWNLOAD_LINK",
              format!("https://github.com/rust-lang/rust/tarball/{}", version))
-        .status().unwrap_or_else(|e| {
+        .status()
+        .unwrap_or_else(|e| {
             panic!("failed to execute process: {}", e);
         });
 
@@ -63,6 +68,6 @@ fn main() {
     // file as a success tag.
     match fs::File::create(version) {
         Err(e) => panic!(e),
-        _ => {},
+        _ => {}
     }
 }

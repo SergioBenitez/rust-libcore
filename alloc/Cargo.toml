@@ -1,0 +1,14 @@
+[package]
+name = "rust-liballoc"
+version = "0.0.3"
+authors = ["The Rust Developers Team"]
+build = "../build.rs"
+description = "Liballoc wrapped into cargo package, suitable for cross-builds."
+workspace = ".."
+
+[lib]
+name = "alloc"
+path = "../rust/src/liballoc/lib.rs"
+
+[dependencies]
+rust-libcore = { path = "../core" }

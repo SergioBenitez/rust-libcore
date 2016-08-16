@@ -1,12 +1,2 @@
-[package]
-name = "rust-libcore"
-version = "0.0.3"
-authors = ["The Rust Developers Team"]
-build = "./build.rs"
-description = "Libcore wrapped into cargo package, suitable for cross-builds"
-license-file = "COPYRIGHT"
-repository = "https://github.com/hackndev/rust-libcore"
-
-[lib]
-name = "core"
-path = "rust/src/libcore/lib.rs"
+[workspace]
+members = [ "core", "alloc", "collections", "rustc_unicode" ]
