@@ -5,6 +5,7 @@ use std::io;
 use std::path::Path;
 
 const RUST_DIR: &'static str = "../rust";
+const FALLBACK_RUST_DIR: &'static str = "./rust";
 
 fn ensure_dir<P: AsRef<Path>>(path: P) -> io::Result<()> {
     let path = path.as_ref();
@@ -25,10 +26,9 @@ fn main() {
 
     let output_bytes: &[u8] = rustc_output.stdout.as_ref();
     let version = match std::str::from_utf8(output_bytes) {
-            Ok(s) => s.split(" ").nth(2).expect("rustc gave invalid version format"),
-            Err(e) => panic!(e),
-        }
-        .trim_left_matches("(");
+        Ok(s) => s.split(" ").nth(2).expect("rustc gave invalid version format"),
+        Err(e) => panic!("Version was invalid UTF8: {:?}", e),
+    }.trim_left_matches("(");
 
     match fs::metadata(Path::new(RUST_DIR).join(version)) {
         Ok(meta) => {
@@ -43,14 +43,12 @@ fn main() {
     }
 
     // Ensure the rust directory exists
-    if let Err(e) = ensure_dir(RUST_DIR) {
-        panic!(e);
+    if ensure_dir(RUST_DIR).is_err() {
+        ensure_dir(FALLBACK_RUST_DIR).expect("Rust directory does not exist!");
     }
 
     // cd to the rust directory
-    if let Err(e) = env::set_current_dir(RUST_DIR) {
-        panic!(e);
-    }
+    env::set_current_dir(RUST_DIR).expect("Failed to set current directory.");
 
     // Shell out to perform the build.  In the future, the logic
     // to grab libcore could be done in rust in order to support
